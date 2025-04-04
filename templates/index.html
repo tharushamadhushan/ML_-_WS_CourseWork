@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Subscription Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Predict Bank Subscription</h1>
+    <form id="predictionForm">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+        
+        <label for="job">Job Type (0-10):</label>
+        <input type="number" id="job" name="job" required>
+
+        <label for="marital">Marital Status (0-2):</label>
+        <input type="number" id="marital" name="marital" required>
+
+        <label for="education">Education Level (0-3):</label>
+        <input type="number" id="education" name="education" required>
+
+        <button type="submit">Predict</button>
+    </form>
+    <h2 id="result"></h2>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let formData = {
+                features: [
+                    parseInt(document.getElementById("age").value),
+                    parseInt(document.getElementById("job").value),
+                    parseInt(document.getElementById("marital").value),
+                    parseInt(document.getElementById("education").value)
+                ]
+            };
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = "Prediction: " + (data.prediction ? "Subscribed" : "Not Subscribed");
+            });
+        });
+    </script>
+</body>
+</html>
